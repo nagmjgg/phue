@@ -147,7 +147,9 @@ def random_color(initial=25000,final=60000,pause_time=2,times=10):
             print(light_color)
             if random_flag == 0:
                 break
+
     thread = threading.Thread(target=run_random)
+    print("thread ok")
     thread.start()
 
 def toRGB(Red,Green,Blue):
@@ -164,6 +166,41 @@ def toRGB(Red,Green,Blue):
     b.set_light([1,2,3,4], 'xy', [xx,yy])
     c.set_light([1,2,3,4], 'xy', [xx,yy])
     d.set_light([1,2,3,4], 'xy', [xx,yy])
+
+def toRGB_random_one_light(Red,Green,Blue):
+    X = 0.4124*Red + 0.3576*Green + 0.1805*Blue # Stack Overflow code
+    Y = 0.2126*Red + 0.7152*Green + 0.0722*Blue
+    Z = 0.0193*Red + 0.1192*Green + 0.9505*Blue
+
+    xx = X / (X + Y + Z)
+    yy = Y / (X + Y + Z)
+
+    print(xx,yy)
+    b.set_light([1, 2, 3, 4], 'bri', random.randint(50,256))
+    c.set_light([1, 2, 3, 4], 'bri', random.randint(50,256))
+    d.set_light([1, 2, 3, 4], 'bri', random.randint(50,256))
+    b.set_light([random.randint(1,5)], 'xy', [xx,yy])
+    c.set_light([random.randint(1,5)], 'xy', [xx,yy])
+    d.set_light([random.randint(1,5)], 'xy', [xx,yy])
+
+
+
+def random_one_light():
+    random_flag_one_light = 1
+
+    def random_color(initial=25000, final=60000, pause_time=2, times=10):
+        def run_random():
+            while (random_flag_one_light == 1):
+                event = threading.Event()
+                event.wait(pause_time)
+
+
+                if random_flag == 0:
+                    break
+
+        thread = threading.Thread(target=run_random)
+        print("thread ok")
+        thread.start()
 
 def rgb_colors():
 
@@ -291,14 +328,15 @@ print(text_geometry)
 
 main_window.geometry(text_geometry)
 main_window.title("Monica's Bar")
+main_window.configure(bg="black")
 
 font_btn=("Arial Bold", 12)
 font_title=("Arial Bold", 22)
 
 #...pack(side=LEFT, expand=True, fill=BOTH, ipadx=10, ipady=4)
 
-lbl_title = Label(main_window, text="Monica´s Bar pHue Lights App",font=font_title )
-lbl_title.place(x=100,y=2)
+lbl_title = Label(main_window, text="Monica´s Bar pHue Lights App",font=font_title, bg="black", fg="white" )
+lbl_title.place(x=300,y=2)
 
 btn_red = Button(main_window, text="Red", bg="red", command=lambda : toRGB(255,0,0), font=font_btn, width=8)
 btn_red.place(x=20,y=50)
@@ -324,8 +362,6 @@ btn_white.place(x=620,y=50)
 btn_random = Button(main_window, text="Random", command=random_color, font=font_btn, width=8)
 btn_random.place(x=20,y=100)
 
-random_flag=IntVar()
-
 random_flag_btn = Checkbutton(main_window, text="random active", variable=random_flag, onvalue=1, offvalue=0)
 random_flag_btn.place(x=103,y=100)
 print(random_flag)
@@ -342,19 +378,20 @@ btn_usa_colors.place(x=20,y=200)
 btn_choose_color = Button(main_window, text="Choose Color", bg="white", command=choosed_color_light, font=font_btn, width=15)
 btn_choose_color.place(x=20,y=250)
 
-color=rgb_color((200, 100, 25))
+btn_one_light_random_red = Button(main_window, text="Random Color One light", bg="Red", command= lambda: toRGB_random_one_light(255,0,0), font=font_btn, width=20)
+btn_one_light_random_red.place(x=20,y=300)
 
-btn_rgb = Button(main_window, text="Choose Color", bg=color, command=choosed_color_light, font=font_btn, width=15)
-btn_rgb.place(x=20,y=300)
+btn_one_light_random_green = Button(main_window, text="Random Color One light", bg="Green", command= lambda: toRGB_random_one_light(0,255,0), font=font_btn, width=20)
+btn_one_light_random_green.place(x=220,y=300)
 
-frame = LabelFrame(main_window, text="Colors Buttons")
-frame.place(x=10, y=800)
+btn_one_light_random_blue = Button(main_window, text="Random Color One light", bg="Blue", command= lambda: toRGB_random_one_light(0,0,255), font=font_btn, width=20)
+btn_one_light_random_blue.place(x=420,y=300)
 
-frame = LabelFrame(main_window, text="Colors Buttons")
-frame.pack(side=BOTTOM)
+lbl_preselected_colors = Label(main_window, text="Preselected Colors", font=font_btn)
+lbl_preselected_colors.place(x=20, y = 360)
 
 xx=20
-yy=360
+yy=400
 for i in range(0,256,51):
     for j in range(0, 256, 51):
         for k in range(0, 256, 51):
